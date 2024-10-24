@@ -1,0 +1,94 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>hackathon</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="src\data\Juniors20.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="src\data\Teamleads20.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\Nsu.HackathonProblem.Contracts.csproj">
+        <Link>Nsu.HackathonProblem.Contracts\Nsu.HackathonProblem.Contracts.csproj</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.AssemblyInfoInputs.cache">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.AssemblyInfoInputs.cache</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.assets.cache">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.assets.cache</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.GeneratedMSBuildEditorConfig.editorconfig">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.GeneratedMSBuildEditorConfig.editorconfig</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\Nsu.HackathonProblem.Contracts.csproj.nuget.dgspec.json">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Nsu.HackathonProblem.Contracts.csproj.nuget.dgspec.json</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\Nsu.HackathonProblem.Contracts.csproj.nuget.g.props">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Nsu.HackathonProblem.Contracts.csproj.nuget.g.props</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\Nsu.HackathonProblem.Contracts.csproj.nuget.g.targets">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Nsu.HackathonProblem.Contracts.csproj.nuget.g.targets</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\project.assets.json">
+        <Link>Nsu.HackathonProblem.Contracts\obj\project.assets.json</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\project.nuget.cache">
+        <Link>Nsu.HackathonProblem.Contracts\obj\project.nuget.cache</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\project.packagespec.json">
+        <Link>Nsu.HackathonProblem.Contracts\obj\project.packagespec.json</Link>
+      </Content>
+      <Content Include="..\Nsu.HackathonProblem.Contracts\obj\rider.project.restore.info">
+        <Link>Nsu.HackathonProblem.Contracts\obj\rider.project.restore.info</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs</Link>
+      </Compile>
+      <Compile Include="..\Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.AssemblyInfo.cs">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.AssemblyInfo.cs</Link>
+      </Compile>
+      <Compile Include="..\Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.GlobalUsings.g.cs">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\Nsu.HackathonProblem.Contracts.GlobalUsings.g.cs</Link>
+      </Compile>
+      <Compile Include="..\Nsu.HackathonProblem.Contracts\Program.cs">
+        <Link>Nsu.HackathonProblem.Contracts\Program.cs</Link>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="..\Nsu.HackathonProblem.Contracts\bin\Debug\net8.0\">
+        <Link>Nsu.HackathonProblem.Contracts\bin\Debug\net8.0</Link>
+      </Folder>
+      <Folder Include="..\Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\refint\">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\refint</Link>
+      </Folder>
+      <Folder Include="..\Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\ref\">
+        <Link>Nsu.HackathonProblem.Contracts\obj\Debug\net8.0\ref</Link>
+      </Folder>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Downloads\CSHARP_2024_NSU-main\Nsu.HackathonProblem.Contracts\Nsu.HackathonProblem.Contracts\Nsu.HackathonProblem.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>
