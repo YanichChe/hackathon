@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: HackathonDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__HackathonDatabase=Host=localhost;Database=HackathonDB;Username=admin;Password=admin
+    depends_on:
+      - db
+    ports:
+      - "80:80"
+    entrypoint: /bin/bash -c "dotnet ef database update && dotnet Hackathons.dll"
+
+volumes:
+  pgdata:

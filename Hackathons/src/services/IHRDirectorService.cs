@@ -1,5 +1,3 @@
-using Nsu.HackathonProblem.Contracts;
-
 namespace Hackathon.services;
 
 public interface IHRDirectorService

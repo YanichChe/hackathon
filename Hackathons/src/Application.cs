@@ -4,7 +4,9 @@ using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.ConfigureServices();
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+builder.Services.ConfigureRepositories();
+builder.Services.ConfigureStrategy();
 
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 using var host = builder.Build();
 host.Run();

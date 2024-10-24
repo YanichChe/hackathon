@@ -4,11 +4,11 @@ namespace Hackathon.services.impl;
 
 public class WishlistsGeneratorService : IWishlistsGeneratorService
 {
-    private readonly Random _random = new Random();
+    private readonly Random _random = new ();
     
     public  List<Wishlist> GenerateWishlist(List<Employee> employees, List<Employee> desiredEmployees)
     {
-        List<Wishlist> wishlists = new List<Wishlist>();
+        List<Wishlist> wishlists = new ();
         foreach (Employee employee in employees)
         {
             List<Employee> randomizedEmployees = desiredEmployees.OrderBy(j => _random.Next()).ToList();

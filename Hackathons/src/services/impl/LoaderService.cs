@@ -1,3 +1,4 @@
+using hackathon.context;
 using Microsoft.Extensions.Configuration;
 using Nsu.HackathonProblem.Contracts;
 
@@ -13,10 +14,12 @@ public class LoaderService(IConfiguration configuration): ILoaderService
             throw new ArgumentException($"Path for teamleads data not found in configuration for key '{path}'");
         }
         
-        return File.ReadAllLines(key)
+        var a =  File.ReadAllLines(key)
             .Skip(1)
             .Select(line => line.Split(';'))
             .Select(parts => new Employee(Int32.Parse(parts[0]), parts[1]))
             .ToList();
+
+        return a;
     }
 }
