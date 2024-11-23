@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Nsu.HackathonProblem.Contracts</RootNamespace>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Update="Nsu.HackathonProblem.Contracts\ITeamBuildingStrategy.cs">
+            <Link>Nsu.HackathonProblem.Contracts\ITeamBuildingStrategy.cs</Link>
+        </Compile>
+        <Compile Update="Nsu.HackathonProblem.Contracts\Wishlist.cs">
+            <Link>Nsu.HackathonProblem.Contracts\Wishlist.cs</Link>
+        </Compile>
+        <Compile Update="Nsu.HackathonProblem.Contracts\Team.cs">
+            <Link>Nsu.HackathonProblem.Contracts\Team.cs</Link>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="Nsu.HackathonProblem.Contracts\Nsu.HackathonProblem.Contracts.csproj" />
+    </ItemGroup>
+</Project>
