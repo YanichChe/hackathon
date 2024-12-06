@@ -1,0 +1,208 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: HackathonDB
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "admin" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - hackathon-net
+
+  director:
+    container_name: director
+    image: director_image
+    build:
+      dockerfile: ./Director/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail http://localhost:8080/health" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+
+  manager:
+    container_name: manager
+    image: manager_image
+    build:
+      dockerfile: ./HrManager/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DIRECTOR_URL=http://director:8080/api/director
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail http://localhost:8080/health" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    depends_on:
+      director:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  junior1:
+    container_name: junior1
+    image: junior_image
+    build:
+      dockerfile: ./Junior/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - JUNIOR_ID=1
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  junior2:
+    container_name: junior2
+    image: junior_image
+    build:
+      dockerfile: ./Junior/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - JUNIOR_ID=2
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  junior3:
+    container_name: junior3
+    image: junior_image
+    build:
+      dockerfile: ./Junior/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - JUNIOR_ID=3
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  junior4:
+    container_name: junior4
+    image: junior_image
+    build:
+      dockerfile: ./Junior/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - JUNIOR_ID=4
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  junior5:
+    container_name: junior5
+    image: junior_image
+    build:
+      dockerfile: ./Junior/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - JUNIOR_ID=5
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  teamLead1:
+    container_name: teamLead1
+    image: team_lead_image
+    build:
+      dockerfile: ./TeamLead/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TEAMLEAD_ID=1
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  teamLead2:
+    container_name: teamLead2
+    image: team_lead_image
+    build:
+      dockerfile: ./TeamLead/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TEAMLEAD_ID=2
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  teamLead3:
+    container_name: teamLead3
+    image: team_lead_image
+    build:
+      dockerfile: ./TeamLead/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TEAMLEAD_ID=3
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  teamLead4:
+    container_name: teamLead4
+    image: team_lead_image
+    build:
+      dockerfile: ./TeamLead/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TEAMLEAD_ID=4
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+  
+  teamLead5:
+    container_name: teamLead5
+    image: team_lead_image
+    build:
+      dockerfile: ./TeamLead/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TEAMLEAD_ID=5
+      - MANAGER_URL=http://manager:8080/api/hrmanager
+    depends_on:
+      manager:
+        condition: service_healthy
+    networks:
+      - hackathon-net
+networks:
+  hackathon-net:
