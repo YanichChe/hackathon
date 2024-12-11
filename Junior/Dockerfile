@@ -24,6 +24,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine as runtime
 
 WORKDIR /Junior
 
+# Install curl in the runtime image
+RUN apk add --no-cache curl
+
 # Copy everything needed to run the Junior from the "build" stage.
 COPY --from=build /Junior/out ./
 

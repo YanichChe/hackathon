@@ -1,27 +1,33 @@
 using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Nsu.HackathonProblem.Contracts;
+using TeamLead.publisher;
 using TeamLead.services;
 
 namespace TeamLead.Services;
 
-public class TeamLeadService : IHostedService
+public interface ITeamLeadService
 {
-    private readonly HttpClient _client;
+    public Task SendWishList(List<Employee> juniors, int hackathonId);
+}
+
+public class TeamLeadService : ITeamLeadService
+{
     private readonly ILogger<TeamLeadService> _logger;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IWishlistsGeneratorService _wishlistsGeneratorService;
     private readonly string _managerUrl;
     private readonly int _teamLeadId;
-    private readonly IWishlistsGeneratorService _wishlistsGeneratorService;
-
-    public TeamLeadService(HttpClient client,
+    
+    public TeamLeadService(
         IWishlistsGeneratorService wishlistsGeneratorService,
         ILogger<TeamLeadService> logger,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IServiceProvider serviceProvider)
     {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
         _wishlistsGeneratorService = wishlistsGeneratorService ??
                                      throw new ArgumentNullException(nameof(wishlistsGeneratorService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -30,28 +36,24 @@ public class TeamLeadService : IHostedService
         _teamLeadId = int.TryParse(configuration["TEAMLEAD_ID"], out var teamLeadId)
             ? teamLeadId
             : throw new ArgumentNullException(nameof(_teamLeadId));
+        _serviceProvider = serviceProvider;
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public async Task SendWishList(List<Employee> juniors, int hackathonId)
     {
         _logger.LogInformation("TeamLeadService started. Connecting to manager at {URL}.", _managerUrl);
 
         try
         {
-            var response = await _client.GetStringAsync($"{_managerUrl}/juniors", cancellationToken);
-            var juniors = JsonConvert.DeserializeObject<List<Employee>>(response);
-
             var wishlist = _wishlistsGeneratorService.GenerateWishlist(_teamLeadId, juniors);
             _logger.LogInformation("Successfully generated TeamLead wishlist with {Size} juniors.",
                 wishlist.DesiredEmployees.Length);
-
-            var responseMessage =
-                await _client.PostAsJsonAsync($"{_managerUrl}/team-lead", wishlist, cancellationToken);
-            if (responseMessage.IsSuccessStatusCode)
-                _logger.LogInformation("Wishlist successfully submitted to manager.");
-            else
-                _logger.LogWarning("Failed to submit wishlist to manager. Status code: {StatusCode}",
-                    responseMessage.StatusCode);
+            
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var publisher = scope.ServiceProvider.GetRequiredService<ITeamLeadPublisher>();
+                publisher.SendWishList(wishlist, hackathonId);
+            }
         }
         catch (HttpRequestException ex)
         {
@@ -69,11 +71,5 @@ public class TeamLeadService : IHostedService
         {
             _logger.LogError(ex, "An unexpected error occurred in TeamLeadService.");
         }
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("TeamLeadService is stopping.");
-        return Task.CompletedTask;
     }
 }

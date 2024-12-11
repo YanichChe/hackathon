@@ -21,7 +21,7 @@ public class TeamLead
 {
     public int Id { get; set; }
     public string Name { get; set; }
-
+    
     public List<Wishlist> Wishlists { get; set; } = new();
 }
 

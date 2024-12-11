@@ -1,5 +1,6 @@
 using HrManager.context;
 using HrManager.context.repository;
+using HrManager.publisher;
 using HrManager.services;
 using HrManager.strategy;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,8 @@ public static class ServiceConfiguration
     {
         services.AddScoped<ILoaderService, LoaderService>();
         services.AddScoped<IHrManagerService, HrManagerService>();
-        services.AddScoped<IHackathonService, HackathonService>();
+        services.AddSingleton<IHackathonService, HackathonService>();
+        services.AddScoped<IHrManagerPublisher, HrManagerPublisher>();
     }
 
     public static void ConfigureRepositories(this IServiceCollection services)
@@ -35,15 +37,9 @@ public static class ServiceConfiguration
             config.SetMinimumLevel(LogLevel.Information);
         });
     }
-
-    public static void ConfigureHttpClient(this IServiceCollection services)
-    {
-        services.AddHttpClient<ManagerHttpClient>();
-    }
-
+    
     public static void ConfigureStrategy(this IServiceCollection services)
     {
-        services.AddScoped<ITeamBuildingStrategy, GreedyStrategy>();
-        services.AddHttpClient<ManagerHttpClient>();
+        services.AddSingleton<ITeamBuildingStrategy, GreedyStrategy>();
     }
 }

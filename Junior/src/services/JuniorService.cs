@@ -1,27 +1,32 @@
-using System.Net.Http.Json;
-using Junior.services;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Nsu.HackathonProblem.Contracts;
+using Junior.publisher;
+using Junior.services;
 
 namespace Junior.Services;
 
-public class JuniorService : IHostedService
+public interface IJuniorService
 {
-    private readonly HttpClient _client;
-    private readonly int _juniorId;
-    private readonly ILogger<JuniorService> _logger;
-    private readonly string _managerUrl;
-    private readonly IWishlistsGeneratorService _wishlistsGeneratorService;
+    public Task SendWishList(List<Employee> juniors, int hackathonId);
+}
 
-    public JuniorService(HttpClient client,
+public class JuniorService : IJuniorService
+{
+    private readonly ILogger<JuniorService> _logger;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IWishlistsGeneratorService _wishlistsGeneratorService;
+    private readonly string _managerUrl;
+    private readonly int _juniorId;
+    
+    public JuniorService(
         IWishlistsGeneratorService wishlistsGeneratorService,
         ILogger<JuniorService> logger,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IServiceProvider serviceProvider)
     {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
         _wishlistsGeneratorService = wishlistsGeneratorService ??
                                      throw new ArgumentNullException(nameof(wishlistsGeneratorService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -30,27 +35,24 @@ public class JuniorService : IHostedService
         _juniorId = int.TryParse(configuration["JUNIOR_ID"], out var juniorId)
             ? juniorId
             : throw new ArgumentNullException(nameof(_juniorId));
+        _serviceProvider = serviceProvider;
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public async Task SendWishList(List<Employee> juniors, int hackathonId)
     {
         _logger.LogInformation("JuniorService started. Connecting to manager at {URL}.", _managerUrl);
 
         try
         {
-            var response = await _client.GetStringAsync($"{_managerUrl}/team-leads", cancellationToken);
-            var teamLeads = JsonConvert.DeserializeObject<List<Employee>>(response);
-
-            var wishlist = _wishlistsGeneratorService.GenerateWishlist(_juniorId, teamLeads);
-            _logger.LogInformation("Successfully generated Junior wishlist with {Size} team leads.",
+            var wishlist = _wishlistsGeneratorService.GenerateWishlist(_juniorId, juniors);
+            _logger.LogInformation("Successfully generated Junior wishlist with {Size} juniors.",
                 wishlist.DesiredEmployees.Length);
-
-            var responseMessage = await _client.PostAsJsonAsync($"{_managerUrl}/junior", wishlist, cancellationToken);
-            if (responseMessage.IsSuccessStatusCode)
-                _logger.LogInformation("Wishlist successfully submitted to manager.");
-            else
-                _logger.LogWarning("Failed to submit wishlist to manager. Status code: {StatusCode}",
-                    responseMessage.StatusCode);
+            
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var publisher = scope.ServiceProvider.GetRequiredService<IJuniorPublisher>();
+                publisher.SendWishList(wishlist, hackathonId );
+            }
         }
         catch (HttpRequestException ex)
         {
@@ -68,11 +70,5 @@ public class JuniorService : IHostedService
         {
             _logger.LogError(ex, "An unexpected error occurred in JuniorService.");
         }
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("JuniorService is stopping.");
-        return Task.CompletedTask;
     }
 }
